@@ -18,32 +18,10 @@ function loadConfig() {
   /** @type {import('config').Config} */
   const result = {
     commandPath: [],
-    /** Options for building client */
-    client: {
-      entry: 'src/client/index.html',
-      parcel: {
-        cacheDir: './.cache/client',
-        outDir: './dist/client',
-        target: 'browser',
-      },
-    },
     /**
      * Arguments to pass to run
      */
     runArguments: [],
-    /** Options for building server */
-    server: {
-      entry: 'src/server/index.js',
-      run: true,
-      docker: true,
-      parcel: {
-        cacheDir: './.cache/server',
-        outDir: './dist/server',
-        outFile: 'index.js',
-        target: 'node',
-        minify: false,
-      },
-    },
     sources: [],
     lint: {
       carets: {
@@ -75,7 +53,18 @@ function loadConfig() {
     ]
       .map(regex => files.find(file => regex.test(file)))
       .filter(Boolean)[0];
-    if (entry) result.client.entry = entry;
+
+    if (entry) {
+      result.sources.push({
+        name: 'client',
+        entry: 'src/client/index.html',
+        parcel: {
+          cacheDir: './.cache/client',
+          outDir: './dist/client',
+          target: 'browser',
+        },
+      });
+    }
   }
 
   {
@@ -89,19 +78,32 @@ function loadConfig() {
     ]
       .map(regex => files.find(file => regex.test(file)))
       .filter(Boolean)[0];
-    if (entry) result.server.entry = entry;
+
+    if (entry) {
+      result.sources.push({
+        name: 'server',
+        entry: 'src/server/index.js',
+        run: true,
+        docker: true,
+        parcel: {
+          cacheDir: './.cache/server',
+          outDir: './dist/server',
+          outFile: 'index.js',
+          target: 'node',
+          minify: false,
+        },
+      });
+    }
   }
 
   Object.assign(result, defaultsDeep(config, result));
 
   // Make sources[] override the hard-coded client/server
   result.sources = uniqBy(
-    reverse(result.sources)
-      .concat(
-        { ...result.client, name: 'client' },
-        { ...result.server, name: 'server' }
-      )
-      .map((item, i) => ({ name: `source${i + 1}`, ...item })),
+    reverse(result.sources).map((item, i) => ({
+      name: `source${i + 1}`,
+      ...item,
+    })),
     'name'
   );
 
