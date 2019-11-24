@@ -5,14 +5,29 @@ export type DependencyType = 'strict' | 'range' | 'ignore';
 export declare interface Source {
   /** Name to display in any output related to this source (optional) */
   name: string;
+  /** Makes this Source identifiable via this identifier. Used for setting up dependencies amongst sources */
+  id?: string;
+  /**
+   * Sets up sources this source will depend on being completed first before this source can execute. This will be a
+   * list of ids set on the parent Source.
+   */
+  dependencies?: string[];
   /** True if this entry utilizes docker (default: false) */
   docker?: boolean;
   /** True if this item emits a runnable file (default: false) */
   run?: boolean;
+  /** Optional list of arguments to pass to the forked process */
+  runArguments?: string[];
   /** The entry file for the server compilation */
   entry: string;
   /** The parcel configuration options */
   parcel: ParcelOptions;
+  /** Internal tracking of which sources depend on this source. This should NOT be set in the config */
+  childSources?: string[];
+}
+
+export declare interface SourceInternal extends Partial<Source> {
+
 }
 
 export declare interface Config {

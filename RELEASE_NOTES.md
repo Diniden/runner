@@ -1,3 +1,18 @@
+## 1.11.0
+
+## Added
+
+- [`ADDED`]: Make the run system ignore server and client if their paths are invalid
+- [`ADDED`]: Make the run system not attempt to build things that have no entry
+
+## 1.10.1
+
+## Fixed
+
+- [`FIXED`]: Some packages were displaying security vulnerabilities
+- [`FIXED`]: The tags do not sort correctly in release notes
+- [`FIXED`]: Unable to have more than one server
+
 ## 1.10.0
 
 ## Added
